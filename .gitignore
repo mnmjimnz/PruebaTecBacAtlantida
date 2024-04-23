@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/bco.atlantida.estadocuenta.webapp/bin/Debug/net6.0
+/bco.atlantida.estadocuenta.webapp/obj
