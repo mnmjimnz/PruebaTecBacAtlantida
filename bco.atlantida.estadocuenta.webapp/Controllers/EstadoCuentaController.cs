@@ -41,6 +41,7 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
                         tarjeta.MontoTotalCompras = tarjeta.MontoTotalCompras - totalPagos;
                         if (tarjeta.MontoTotalCompras < 0)
                         {
+                            tarjeta.EstadoCuenta = new EstadoCuentaViewModel();
                             tarjeta.EstadoCuenta.SaldoDisponible = tarjeta.Compras.Sum(y => y.Monto) + tarjeta.MontoTotalCompras;
                             tarjeta.EstadoCuenta.SaldoActual = Math.Abs(tarjeta.MontoTotalCompras);
                             tarjeta.MontoTotalCompras = 0;

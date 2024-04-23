@@ -29,22 +29,23 @@
                         <td>@item.FechaExpiracion.ToString("dd/MM/yyyy")</td>
                         <td>@item.Limite</td>
                         <td>
-                            <input type="button" class="btn btn-light btn-small" value="Editar"
-                                   onclick="AccionesTarjeta('@item.IdTarjeta')" />
+
                             @{
                                 if (item.Configuracion != null)
                                 {
                                     <input type="button" class="btn btn-light btn-small" value="Acciones"
                                            onclick="LoadDetail('@item.IdTarjeta')" />
                                     <input type="button" class="btn btn-light btn-small" value="Historial de Compras"
-                                           onclick="FormPagos('@item.IdTarjeta')" />
+                                           onclick="Historial('@item.IdTarjeta',1)" />
                                     <input type="button" class="btn btn-light btn-small" value="Historial de Pagos"
-                                           onclick="FormPagos('@item.IdTarjeta')" />
+                                           onclick="Historial('@item.IdTarjeta',2)" />
                                     <input type="button" class="btn btn-light btn-small" value="Editar Configuracion"
                                            onclick="AccionesConfiguraciones('@item.Configuracion.IdConfiguracion','@item.IdTarjeta')" />
                                 }
                                 else
                                 {
+                                    <input type="button" class="btn btn-light btn-small" value="Editar"
+                                           onclick="AccionesTarjeta('@item.IdTarjeta')" />
                                     <input type="button" class="btn btn-light btn-small" value="Agregar Configuracion"
                                            onclick="AccionesConfiguraciones(undefined,'@item.IdTarjeta')" />
                                 }
@@ -241,10 +242,10 @@
             $("#ContadoConInteresesVal").val(parseFloat(res.totales.contadoConIntereses).toFixed(2));
         });
     }
-    function AgregarPago(saldoPagar, idTarjeta, personalizado) {
+    function AgregarPago(saldoPagar, idTarjeta, personalizado, saldoTarjeta) {
         let textTittle = "Realizar Pago";
         let textButton = "Aceptar";
-        let url = '@Url.Action("FormPagos", "Movimientos")?IdTarjeta=' + idTarjeta + "&&SaldoPagar=" + saldoPagar;
+        let url = '@Url.Action("FormPagos", "Movimientos")?IdTarjeta=' + idTarjeta + "&&SaldoPagar=" + saldoPagar + "&&saldoTarjeta=" + saldoTarjeta;
         $.get(url, function (res) {
             $("#modClassMovimiento").removeClass("modal-fullscreen");
             $mymodal = $("#ModalMovimmiento");
@@ -258,6 +259,22 @@
                 $("#Descripcion").attr("readonly", false);
                 $("#Descripcion").val("");
             }
+        });
+    }
+    function Historial(idTarjeta, tipo) {
+        //tipo 1 = compras, tipo 2 =
+        let tittle = "Historial Compras";
+        let url = '@Url.Action("HistorialCompras", "Movimientos")?IdTarjeta=' + idTarjeta + "&&tipo=" + tipo;
+        if (tipo == 2) {
+            url = '@Url.Action("HistorialPagos", "Movimientos")?IdTarjeta=' + idTarjeta + "&&tipo=" + tipo;
+            tittle = "Historial Pagos";
+        }
+        $.get(url, function (res) {
+            $("#modClass").addClass("modal-fullscreen");
+            $mymodal = $("#ModalTarjeta");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#staticBackdropLabel").text(tittle);
         });
     }
 </script>

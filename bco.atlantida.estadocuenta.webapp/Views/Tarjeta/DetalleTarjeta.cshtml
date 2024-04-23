@@ -19,14 +19,14 @@
                         <div class="row">
                             <div class="col-md-6"><h6 id="CuotaMinimaPagoText">Cuota Minima: $@Model.CuotaMinimaPago.ToString("N2")</h6></div>
                             <input type="hidden" id="CuotaMinimaPagoVal" value="@Model.CuotaMinimaPago.ToString("N2")" />
-                            <div class="col-md-6"><button onclick="AgregarPago($('#CuotaMinimaPagoVal').val(),'@Model.IdTarjeta',1)" type="button" class="btn btn-sm btn-light">Pagar</button></div>
+                            <div class="col-md-6"><button onclick="AgregarPago($('#CuotaMinimaPagoVal').val(),'@Model.IdTarjeta',1,'@Model.Limite')" type="button" class="btn btn-sm btn-light">Pagar</button></div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-6"><h6 id="ContadoConInteresesText">Total Contado + Intereses: $@Model.ContadoConIntereses.ToString("N2")</h6></div>
                             <input type="hidden" id="ContadoConInteresesVal" value="@Model.ContadoConIntereses.ToString("N2")" />
-                            <div class="col-md-6"><button onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',1)" type="button" class="btn btn-sm btn-light">Pagar</button></div>
+                            <div class="col-md-6"><button onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',1,'@Model.Limite')" type="button" class="btn btn-sm btn-light">Pagar</button></div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                 <button type="button" class="btn btn-light btn-info" onclick="nuevaCompra(undefined,'@Model.IdTarjeta','@Model.Limite')">Nueva Compra</button>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-success btn-small" onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',2)">Pago Personalizado</button>
+                <button type="button" class="btn btn-success btn-small" onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',2,'@Model.Limite')">Pago Personalizado</button>
             </div>
         </div>
         <div class="row" id="contenedorTablaCompras">

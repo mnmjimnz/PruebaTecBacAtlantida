@@ -106,10 +106,16 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
                             }
                             if (data.MontoTotalCompras < 0)
                             {
-                                data.EstadoCuenta.SaldoDisponible = data.Compras.Sum(y => y.Monto) + data.MontoTotalCompras;
-                                data.EstadoCuenta.SaldoActual = Math.Abs(data.MontoTotalCompras);
+                                var saldoDisponibleF = data.Compras.Sum(y => y.Monto) + data.MontoTotalCompras;
+                                data.EstadoCuenta.SaldoDisponible = saldoDisponibleF + Math.Abs(data.MontoTotalCompras);
+                                data.EstadoCuenta.SaldoActual = 0;
                                 data.MontoTotalCompras = 0;
                             }
+                            //if(data.EstadoCuenta.TotalMasIntereses == 0)
+                            //    {
+                            //    ecdata.SaldoActual = 0;
+                            //    ecdata.SaldoDisponible = (decimal)movimiento.SaldoTarjeta;
+                            //}
                             DateTime FechaMesActual_1 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 00, 00, 00);
                             DateTime FechaMesActual_2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month), 11, 59, 59);
                             DateTime FechaMesAnterior_1 = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, 1, 00, 00, 00);

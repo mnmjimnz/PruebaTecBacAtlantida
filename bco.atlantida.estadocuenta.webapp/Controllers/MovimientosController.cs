@@ -18,6 +18,40 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
             _configuration = config;
             _request = request;
         }
+        public async Task<IActionResult> HistorialPagos(int IdTarjeta)
+        {
+            List<MovimientosViewModel> list = new List<MovimientosViewModel>();
+            try
+            {
+                var x = await _request.GetData($"{_configuration["APIurl"]}{_url}/GetPagosByIdTarjeta/{IdTarjeta}");
+                if (x != null)
+                {
+                    list = JsonConvert.DeserializeObject<List<MovimientosViewModel>>(x);
+                }
+            }
+            catch (Exception)
+            {
+                //Retornar mensaje de error
+            }
+            return PartialView(list);
+        }
+        public async Task<IActionResult> HistorialCompras(int IdTarjeta)
+        {
+            List<MovimientosViewModel> list = new List<MovimientosViewModel>();
+            try
+            {
+                var x = await _request.GetData($"{_configuration["APIurl"]}{_url}/GetComprasByIdTarjeta/{IdTarjeta}");
+                if (x != null)
+                {
+                    list = JsonConvert.DeserializeObject<List<MovimientosViewModel>>(x);
+                }
+            }
+            catch (Exception)
+            {
+                //Retornar mensaje de error
+            }
+            return PartialView(list);
+        }
         public async Task<IActionResult> DetallesMovimiento(int IdMovimiento)
         {
             MovimientosViewModel data = new MovimientosViewModel();
@@ -59,11 +93,12 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
             }
             return PartialView(data);
         }
-        public async Task<IActionResult> FormPagos(int IdTarjeta, decimal SaldoPagar)
+        public async Task<IActionResult> FormPagos(int IdTarjeta, decimal SaldoPagar, decimal? saldoTarjeta)
         {
             MovimientosViewModel data = new MovimientosViewModel();
             data.IdTarjeta = IdTarjeta != null ? (int)IdTarjeta : 0;
             data.Monto = SaldoPagar != null ? (decimal)SaldoPagar : 0;
+            data.SaldoTarjeta = saldoTarjeta != null ? (decimal)saldoTarjeta : 0;
             data.Descripcion = "Pago a la tarjeta";
             return PartialView(data);
         }
@@ -84,7 +119,7 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
                         if (resultEc.Count > 0)
                         {
                             ecdata = resultEc.SingleOrDefault();
-                            if (movimiento.Monto <= ecdata.TotalMasIntereses)
+                            if (movimiento.Monto <= ecdata.TotalMasIntereses && movimiento.Monto > 0)
                             {
                                 //actualizar el estado cuenta
                                 ecdata.SaldoDisponible = ecdata.SaldoDisponible + movimiento.Monto;
@@ -92,6 +127,7 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
                                 if (ecdata.TotalMasIntereses == 0)
                                 {
                                     ecdata.SaldoActual = 0;
+                                    ecdata.SaldoDisponible = (decimal)movimiento.SaldoTarjeta;
                                 }
                                 else
                                 {
@@ -120,7 +156,7 @@ namespace bco.atlantida.estadocuenta.webapp.Controllers
                             else
                             {
                                 //retornar mensaje de error
-                                data.Mensaje = "El monto ingresado es mayor al pago a realizar.";
+                                data.Mensaje = "El monto ingresado no es valido.";
                             }
                         }
                         else

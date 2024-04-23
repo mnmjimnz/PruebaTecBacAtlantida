@@ -1,0 +1,24 @@
+﻿@using bco.atlantida.estadocuenta.webapp.Models.ViewModel
+<div class="row">
+    <table class="table table-sm table-responsive-sm">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Fecha</td>
+                <td>Monto</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdMovimiento</td>
+                        <td>@item.FechaMovimiento.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Monto</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
