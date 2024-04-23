@@ -1,0 +1,33 @@
+﻿@model bco.atlantida.estadocuenta.webapp.Models.ViewModel.ConfiguracionViewModel
+<div class="row">
+    <form asp-action="AccionesConfiguraciones" method="post" id="formConfiguraciones">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="IdTarjeta" class="form-control" type="hidden" />
+        <input asp-for="IdConfiguracion" class="form-control" readonly type="hidden" />
+        <input asp-for="urlBusqueda" class="form-control" readonly type="hidden" />
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="PorcentajeSaldoMin" class="control-label"></label>
+                    <input asp-for="PorcentajeSaldoMin" class="form-control form-control-sm" />
+                    <span asp-validation-for="PorcentajeSaldoMin" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="col-md-9">
+                <div class="form-group">
+                    <label asp-for="PorcentajeInteres" class="control-label"></label>
+                    <input asp-for="PorcentajeInteres" class="form-control form-control-sm" />
+                    <span asp-validation-for="PorcentajeInteres" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="submit" id="btnSubmitConfigForm" value="Guardar" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

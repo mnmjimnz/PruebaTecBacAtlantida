@@ -1,0 +1,152 @@
+﻿@model bco.atlantida.estadocuenta.webapp.Models.ViewModel.TarjetaViewModel
+
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="row">
+            <div class="col-sm-1 col-md-3 col-lg-4">
+                <div class="row">
+                    <h5 id="saldoActual">Saldo actual: $ @Model.EstadoCuenta.SaldoActual.ToString("N2")</h5>
+                    <h5>Limite: $ @Model.Limite</h5>
+                    <h5 id="saldoDisponible">Saldo disponible: $ @Model.EstadoCuenta.SaldoDisponible.ToString("N2")</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6" id="InteresBonificableText"><h6>Interes Bonificable: $@Model.InteresBonificable.ToString("N2")</h6></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6"><h6 id="CuotaMinimaPagoText">Cuota Minima: $@Model.CuotaMinimaPago.ToString("N2")</h6></div>
+                            <input type="hidden" id="CuotaMinimaPagoVal" value="@Model.CuotaMinimaPago.ToString("N2")" />
+                            <div class="col-md-6"><button onclick="AgregarPago($('#CuotaMinimaPagoVal').val(),'@Model.IdTarjeta',1)" type="button" class="btn btn-sm btn-light">Pagar</button></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6"><h6 id="ContadoConInteresesText">Total Contado + Intereses: $@Model.ContadoConIntereses.ToString("N2")</h6></div>
+                            <input type="hidden" id="ContadoConInteresesVal" value="@Model.ContadoConIntereses.ToString("N2")" />
+                            <div class="col-md-6"><button onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',1)" type="button" class="btn btn-sm btn-light">Pagar</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 col-md-6 col-lg-4">
+                <div class="row">
+                    <div class="card">
+                        <div class="accordion-header">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label>N° Tarjeta</label>
+                                    <p id="numero" class="fw-bold">@Model.NumeroTarjeta</p>
+                                </div>
+                                <div class="col-md-2">CCV</div>
+                                <div class="col-md-2" id="ccv">@Model.CodigoSeguridad</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <p id="nombre" class="small">@Model.NombreCliente</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="small">MES</p>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p class="small">AÑO</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p id="mes" class="small">@Model.Mes</p>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p id="anio" class="small">@Model.Anio</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1 col-md-3 col-lg-4">
+                <div class="row">
+                    <h5>Monto total de compras: $@Model.MontoTotalCompras</h5>
+                    <h5>Mes anterior: $@Model.TotalMesActual</h5>
+                    <h5>Mes actual: $@Model.TotalMesAnterior</h5>
+                    <h5>Porcentaje de interes: %@Model.PorcentajeInteres</h5>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-light btn-info" onclick="nuevaCompra(undefined,'@Model.IdTarjeta','@Model.Limite')">Nueva Compra</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success btn-small" onclick="AgregarPago($('#ContadoConInteresesVal').val(),'@Model.IdTarjeta',2)">Pago Personalizado</button>
+            </div>
+        </div>
+        <div class="row" id="contenedorTablaCompras">
+            <table class="table table-sm table-responsive-sm">
+                <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>Fecha Realizada</td>
+                        <td>Monto</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody id="tbodymovimientos">
+                    @{
+                        foreach (var item in Model.Compras)
+                        {
+                            <tr>
+                                <td>@item.IdMovimiento</td>
+                                <td>@item.FechaTexto</td>
+                                <td>@item.Monto</td>
+                                <td>
+                                    <input type="button" value="Ver Detalles" class="btn btn-light btn-small"
+                                           onclick="LoadDetailMovimiento('@item.IdMovimiento')" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div class="modal fade" id="ModalMovimmiento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div id="modClassMovimiento" class="modal-dialog modal-fullscreen shadow-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="LabelTittleMov"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

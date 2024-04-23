@@ -1,0 +1,33 @@
+﻿@model bco.atlantida.estadocuenta.webapp.Models.ViewModel.ClienteViewModel
+
+<div class="row">
+    <form asp-action="AccionesCliente">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="IdCliente" class="form-control" type="hidden" />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="NombresCliente" class="control-label"></label>
+                    <input asp-for="NombresCliente" class="form-control" />
+                    <span asp-validation-for="NombresCliente" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="ApellidosCliente" class="control-label"></label>
+                    <input asp-for="ApellidosCliente" class="form-control" />
+                    <span asp-validation-for="ApellidosCliente" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="submit" id="btnSaveCliente" value="Guardar" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+</div>

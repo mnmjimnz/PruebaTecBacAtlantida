@@ -1,0 +1,263 @@
+﻿@using bco.atlantida.estadocuenta.webapp.Models.ViewModel
+
+<div class="row">
+    <div class="col-md-10"></div>
+    <div class="col-md-2">
+        <div class="row">
+            <button type="button" onclick="AccionesTarjeta(undefined,'@ViewBag.IdCliente')" class="btn btn-sm btn-light">Agregar Tarjeta</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <table class="table table-sm table-responsive-sm">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>N. Tarjeta</td>
+                <td>Fecha Expiracion</td>
+                <td>Limite</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdTarjeta</td>
+                        <td>@item.NumeroTarjeta</td>
+                        <td>@item.FechaExpiracion.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Limite</td>
+                        <td>
+                            <input type="button" class="btn btn-light btn-small" value="Editar"
+                                   onclick="AccionesTarjeta('@item.IdTarjeta')" />
+                            @{
+                                if (item.Configuracion != null)
+                                {
+                                    <input type="button" class="btn btn-light btn-small" value="Acciones"
+                                           onclick="LoadDetail('@item.IdTarjeta')" />
+                                    <input type="button" class="btn btn-light btn-small" value="Historial de Compras"
+                                           onclick="FormPagos('@item.IdTarjeta')" />
+                                    <input type="button" class="btn btn-light btn-small" value="Historial de Pagos"
+                                           onclick="FormPagos('@item.IdTarjeta')" />
+                                    <input type="button" class="btn btn-light btn-small" value="Editar Configuracion"
+                                           onclick="AccionesConfiguraciones('@item.Configuracion.IdConfiguracion','@item.IdTarjeta')" />
+                                }
+                                else
+                                {
+                                    <input type="button" class="btn btn-light btn-small" value="Agregar Configuracion"
+                                           onclick="AccionesConfiguraciones(undefined,'@item.IdTarjeta')" />
+                                }
+                            }
+
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="ModalTarjeta" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div id="modClass" class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function AccionesTarjeta(id, idcliente) {
+        let textTittle = "Nuevo Registro";
+        let textButton = "Guardar";
+        let randomNtarjeta = 0;
+        let url = '@Url.Action("FormTarjeta", "Tarjeta")?IdTarjeta=0&&IdCliente=' + idcliente;
+        if (id != undefined) {
+            url = '@Url.Action("FormTarjeta", "Tarjeta")?IdTarjeta=' + id;
+            textTittle = "Editar Registro";
+            textButton = "Guardar Cambios";
+        }
+        $.get(url, function (res) {
+            $("#modClass").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalTarjeta");
+            $mymodal.find("div.modal-body").html(res);
+
+            $mymodal.modal("show");
+            if (id == undefined) {
+                randomNtarjeta = getRandomInt(1000000000000000, 9999999999999999);
+                $("#numero").text(randomNtarjeta);
+                $("#NumeroTarjeta").val(randomNtarjeta);
+                let ccv = getRandomInt(100, 999);
+                $("#ccv").text(ccv);
+                $("#CodigoSeguridad").val(ccv);
+            }
+            $("#btnSubmitTarjetaForm").val(textButton);
+            $("#staticBackdropLabel").text(textTittle);
+
+        });
+    }
+    function AccionesConfiguraciones(id, idtarjeta) {
+        let textTittle = "Nuevo Registro";
+        let textButton = "Guardar";
+        let randomNtarjeta = 0;
+        let url = '@Url.Action("FormConfiguraciones", "Configuraciones")?IdConfiguracion=0&&IdTarjeta=' + idtarjeta;
+        if (id != undefined) {
+            url = '@Url.Action("FormConfiguraciones", "Configuraciones")?IdConfiguracion=' + id;
+            textTittle = "Editar Registro";
+            textButton = "Guardar Cambios";
+        }
+        $.get(url, function (res) {
+            $("#modClass").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalTarjeta");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#btnSubmitConfigForm").val(textButton);
+            $("#staticBackdropLabel").text(textTittle);
+            $("#urlBusqueda").val(location.href)
+        });
+    }
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    function FormPagos(idtarjeta) {
+        let url = '@Url.Action("ListaPagos", "Movimientos")?IdTarjeta=' + id;
+    }
+    function LoadDetail(id) {
+        $.get('@Url.Action("DetalleTarjeta", "Tarjeta")?IdTarjeta=' + id, function (res) {
+            $("#modClass").addClass("modal-fullscreen");
+            $mymodal = $("#ModalTarjeta");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#staticBackdropLabel").text("Detalles");
+
+        });
+    }
+    function cargarLista(lista) {
+        $.get('@Url.Action("ListaMovimientos", "Tarjeta")?lista=' + lista, function (res2) {
+            $("#contenedorTablaCompras").html(res2);
+        });
+    }
+    function OnChangeCard(value, id, idInput) {
+        if (idInput == 'Anio') {
+            $("#" + idInput).val(value.value);
+            $("#" + id).text(value.value);
+        } else {
+            $("#" + id).text(value);
+            $("#" + idInput).val(value);
+        }
+
+    }
+    function LoadDetailMovimiento(id) {
+        $.get('@Url.Action("DetallesMovimiento", "Movimientos")?IdMovimiento=' + id, function (res) {
+            $("#modClassMovimiento").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalMovimmiento");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#LabelTittleMov").text("Detalles");
+        });
+    }
+    function nuevaCompra(id, idtarjeta, saldoTarjeta) {
+        let textTittle = "Nueva Compra";
+        let textButton = "Guardar";
+        let tipo = "post";
+        let url = '@Url.Action("FormCompras", "Movimientos")?IdMovimiento=0&&IdTarjeta=' + idtarjeta + "&&saldoTarjeta=" + saldoTarjeta;
+        if (id != undefined) {
+            url = '@Url.Action("FormCompras", "Movimientos")?IdMovimiento=' + id;
+            textTittle = "Editar Registro";
+            textButton = "Guardar Cambios";
+            tipo = "put";
+        }
+        $.get(url, function (res) {
+            $("#modClassMovimiento").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalMovimmiento");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#btnSubmitCompras").val(textButton);
+            $("#LabelTittleMov").text(textTittle);
+        });
+    }
+    function guardarCompra() {
+        let data = {
+            IdMovimiento: $("#IdMovimiento").val(),
+            Descripcion: $("#Descripcion").val(),
+            Monto: $("#Monto").val(),
+            IdTarjeta: $("#IdTarjeta").val(),
+            SaldoTarjeta: $("#SaldoTarjeta").val()
+        };
+        $.post('@Url.Action("AccionesMovimientos", "Movimientos")', data, function (res) {
+            renderTable(res.data);
+            refrescarEstadoCuenta($("#IdTarjeta").val());
+            alert(res.mensaje);
+            limpiarModal();
+        })
+    }
+    function guardarPago() {
+        let data = {
+            IdMovimiento: $("#IdMovimiento").val(),
+            Descripcion: $("#Descripcion").val(),
+            Monto: $("#Monto").val(),
+            IdTarjeta: $("#IdTarjeta").val(),
+            SaldoTarjeta: $("#SaldoTarjeta").val()
+        };
+        $.post('@Url.Action("AccionesPagos", "Movimientos")', data, function (res) {
+            refrescarEstadoCuenta($("#IdTarjeta").val());
+            alert(res.mensaje);
+            limpiarModal();
+        })
+    }
+    function limpiarModal() {
+        $mymodal = $("#ModalMovimmiento");
+        $mymodal.find("div.modal-body").html('');
+        $mymodal.modal("hide");
+    }
+    function renderTable(json) {
+        let tr = "<tr>";
+        let trf = "</tr>";
+        let td = "<td>";
+        let tdf = "</td>";
+
+        let body = $('#tbodymovimientos');
+        $('#tbodymovimientos').append(tr + td + json[0].idMovimiento + tdf + td + json[0].fechaTexto + tdf + td + parseFloat(json[0].monto).toFixed(2) + tdf + td + '<input type="button" class="btn btn-light btn-small" value="Ver Detalles" onclick="LoadDetailMovimiento(' + json[0].idMovimiento + ')" /> ' + tdf + trf);
+
+    }
+    function refrescarEstadoCuenta(IdTarjeta) {
+        let url = '@Url.Action("GetEstadoCuentaTarjeta", "EstadoCuenta")?IdTarjeta=' + IdTarjeta;
+        $.get(url, function (res) {
+            $("#saldoDisponible").text("Saldo disponible: $" + parseFloat(res.estadoCuenta.saldoDisponible).toFixed(2));
+            $("#saldoActual").text("Saldo actual: $ " + parseFloat(res.estadoCuenta.saldoActual).toFixed(2));
+            $("#InteresBonificableText").text("Interes Bonificable: $ " + parseFloat(res.totales.interesBonificable).toFixed(2));
+            $("#CuotaMinimaPagoText").text("Cuota Minima: $" + parseFloat(res.totales.cuotaMinimaPago).toFixed(2));
+            $("#CuotaMinimaPagoVal").val(parseFloat(res.totales.cuotaMinimaPago).toFixed(2));
+            $("#ContadoConInteresesText").text("Total Contado + Intereses: $" + parseFloat(res.totales.contadoConIntereses).toFixed(2));
+            $("#ContadoConInteresesVal").val(parseFloat(res.totales.contadoConIntereses).toFixed(2));
+        });
+    }
+    function AgregarPago(saldoPagar, idTarjeta, personalizado) {
+        let textTittle = "Realizar Pago";
+        let textButton = "Aceptar";
+        let url = '@Url.Action("FormPagos", "Movimientos")?IdTarjeta=' + idTarjeta + "&&SaldoPagar=" + saldoPagar;
+        $.get(url, function (res) {
+            $("#modClassMovimiento").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalMovimmiento");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#btnSubmitCompras").val(textButton);
+            $("#LabelTittleMov").text(textTittle);
+            if (personalizado == 2) {
+                $("#Monto").val(0);
+                $("#Monto").attr("readonly", false);
+                $("#Descripcion").attr("readonly", false);
+                $("#Descripcion").val("");
+            }
+        });
+    }
+</script>

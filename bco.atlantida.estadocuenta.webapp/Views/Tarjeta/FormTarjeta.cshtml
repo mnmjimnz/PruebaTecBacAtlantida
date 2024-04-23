@@ -1,0 +1,116 @@
+﻿@model bco.atlantida.estadocuenta.webapp.Models.ViewModel.TarjetaViewModel
+
+<div class="row">
+    <div class="row">
+        <div class="col-sm-1 col-md-3 col-lg-2"></div>
+        <div class="col-sm-10 col-md-6 col-lg-8">
+            <div class="row">
+                <div class="card">
+                    <div class="accordion-header">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label>N° Tarjeta</label>
+                                <p id="numero" class="fw-bold">@Model.NumeroTarjeta</p>
+                            </div>
+                            <div class="col-md-2">CCV</div>
+                            <div class="col-md-2" id="ccv">@Model.CodigoSeguridad</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <p id="nombre" class="small">@Model.NombreCliente</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="small">MES</p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p class="small">AÑO</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p id="mes" class="small">@Model.Mes</p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p id="anio" class="small">@Model.Anio</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-1 col-lg-2"></div>
+    </div>
+    <form asp-action="AccionesTarjeta" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="IdTarjeta" class="form-control" type="hidden" />
+        <input asp-for="IdCliente" class="form-control" readonly type="hidden" />
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="NumeroTarjeta" class="control-label"></label>
+                    <input asp-for="NumeroTarjeta" readonly class="form-control form-control-sm" onkeyup="OnChangeCard(this.value,'numero')" />
+                    <span asp-validation-for="NumeroTarjeta" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="CodigoSeguridad" class="control-label"></label>
+                    <input asp-for="CodigoSeguridad" readonly class="form-control form-control-sm" type="number" maxlength="3" min="3" onkeyup="OnChangeCard(this.value,'ccv')" />
+                    <span asp-validation-for="CodigoSeguridad" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Anio" class="control-label"></label>
+                    <select asp-for="ListaAnios" asp-items="@(new SelectList(Model.ListaAnios,"Id","Descripcion", Model.Anio))" class="form-select" onchange="OnChangeCard(this,'anio','Anio')">
+                        <option value="" selected disabled>Seleccionar Año</option>
+                    </select>
+                    <input asp-for="Anio" class="form-control form-control-sm" type="hidden" maxlength="4" min="4" />
+                    <span asp-validation-for="Anio" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Mes" class="control-label"></label>
+                    <select asp-for="ListaMeses" asp-items="@(new SelectList(Model.ListaMeses,"Id","Descripcion", Model.Mes))" class="form-select" onchange="OnChangeCard(this.value,'mes', 'Mes')">
+                        <option value="" selected disabled>Seleccionar mes</option>
+                    </select>
+                    <input asp-for="Mes" class="form-control form-control-sm" type="hidden"  />
+                    <span asp-validation-for="Mes" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Limite" class="control-label"></label>
+                    <input asp-for="Limite" class="form-control form-control-sm" />
+                    <span asp-validation-for="Limite" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="submit" id="btnSubmitTarjetaForm" value="Guardar" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

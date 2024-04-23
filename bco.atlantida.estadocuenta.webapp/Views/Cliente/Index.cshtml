@@ -1,0 +1,74 @@
+﻿@using bco.atlantida.estadocuenta.webapp.Models.ViewModel
+@{
+    List<ClienteViewModel> _cliente = Model as List<ClienteViewModel>;
+}
+<div class="row">
+    <div class="col-md-10"></div>
+    <div class="col-md-2">
+        <div class="row">
+            <button type="button" onclick="AccionesCliente(undefined)" class="btn btn-sm btn-light">Agregar Cliente</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <table class="table table-sm table-responsive-sm">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Nombres</td>
+                <td>Apellidos</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in _cliente)
+                {
+                    <tr>
+                        <td>@item.IdCliente</td>
+                        <td>@item.NombresCliente</td>
+                        <td>@item.ApellidosCliente</td>
+                        <td>
+                            <input type="button" class="btn btn-light btn-small" value="Editar Cliente"
+                                   onclick="AccionesCliente('@item.IdCliente')" />
+                            <input type="button" value="Ver Tarjetas" class="btn btn-light btn-small"
+                                   onclick="location.href='@Url.Action("ListadoTarjetas", "Tarjeta", new { IdCliente = item.IdCliente })'" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="ModalCliente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div id="modClass" class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function AccionesCliente(id) {
+        let textTittle = "Nuevo Registro";
+        let textButton = "Guardar";
+        let url = '@Url.Action("FormCliente", "Cliente")?IdCliente=0';
+        if (id != undefined) {
+            url = '@Url.Action("FormCliente", "Cliente")?IdCliente=' + id;
+            textTittle = "Editar Registro";
+            textButton = "Guardar Cambios";
+        }
+        $.get(url, function (res) {
+            $("#modClass").removeClass("modal-fullscreen");
+            $mymodal = $("#ModalCliente");
+            $mymodal.find("div.modal-body").html(res);
+            $mymodal.modal("show");
+            $("#btnSaveCliente").val(textButton);
+            $("#staticBackdropLabel").text(textTittle);
+        });
+    }
+</script>
